@@ -5,7 +5,8 @@ function Codereview(){
                 <h1 className="text-white text-3xl font-bold">Code Reviewer</h1>
                 <p className="text-gray-400 mt-2">AI-Powered Code Review and Collaboration</p>
             </div>
-            <div></div>
+            <div>
+            </div>
             <div></div>
         </div>
     )
