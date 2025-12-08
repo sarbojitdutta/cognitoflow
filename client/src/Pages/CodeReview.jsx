@@ -1,17 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Editor from "@monaco-editor/react";
+import Prism from "prismjs";
+import hljs from "highlight.js/lib/common";
+
+import "prismjs/themes/prism-tomorrow.css"; // prism dark theme
+import "highlight.js/styles/github-dark.css"; // hljs theme (used only for detection)
+
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-java";
+import "prismjs/components/prism-c";
+import "prismjs/components/prism-cpp";
+import "prismjs/components/prism-markup";
+import "prismjs/components/prism-css";
+import "prismjs/components/prism-typescript";
+
 function Codereview() {
     const [code, setCode] = useState("")
     const [review, setReview] = useState("No review yet...")
+    const [highlighted, setHighlighted] = useState("")
+    const [detectedLang, setDetectedLang] = useState("javascript")
 
-    function handleReview() {
+    useEffect(() => {
+        if(!code.trim()){
+            setHighlighted("")
+            return
+        }
+        const result = hljs.highlightAuto(code)
+        setDetectedLang(result.language || "javascript")
+
+        const prismLang = Prism.languages[result.language ] || Prism.languages.javascript
+        setHighlighted(Prism.highlight(code, prismLang, result.language))
+    },[code])
+
+    async function handleReview() {
         try {
             if (!code.trim) {
                 alert("Please enter some code to review.")
                 return
             }
-            const response = axios.post("http://localhost:3000/api/code/review", { code: code })
+            const response = await axios.post("http://localhost:3000/api/code/review", { code: code })
             response.then((res) => {
                 setReview(res.data.review)
             })
@@ -33,7 +62,7 @@ function Codereview() {
                     <div className="flex-grow rounded-lg overflow-hidden">
                         <Editor
                             height="100%"
-                            language="Plaintext"
+                            defaultLanguage={detectedLang}
                             theme="vs-dark"
                             value={code}
                             onChange={(value) => setCode(value)}
@@ -46,11 +75,8 @@ function Codereview() {
 
                 {/* right side */}
                 <div className="bg-[#1a1a1d] p-6 rounded-xl border border-gray-800 shadow-lg h-[450px]">
-                    <h2 className="text-xl font-semibold mb-4">Reviews</h2>
-
-                    <div className="bg-[#2a2a2d] h-full p-4 rounded-lg overflow-auto whitespace-pre-wrap text-gray-300">
-                        {review}
-                    </div>
+                    <h2 className="text-xl font-semibold mb-4 text-white">Reviews</h2>
+                    <p className="text-gray-300 whitespace-pre-wrap">{review}</p>
                 </div>
             </div>
             <div></div>
