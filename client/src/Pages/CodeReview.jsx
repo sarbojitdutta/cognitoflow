@@ -5,11 +5,9 @@ import Prism from "prismjs";
 import hljs from "highlight.js/lib/common";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
-/* Prism + HLJS Themes */
 import "prismjs/themes/prism-tomorrow.css";
 import "highlight.js/styles/github-dark.css";
 
-/* Prism Languages */
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-java";
@@ -25,19 +23,15 @@ function Codereview() {
     const [highlighted, setHighlighted] = useState("");
     const [detectedLang, setDetectedLang] = useState("javascript");
 
-    /* Auto-detect + Prism highlight */
+    /* Auto-detect */
     useEffect(() => {
         if (!code.trim()) {
-            setHighlighted("");
+            setDetectedLang("javascript");
             return;
         }
 
         const result = hljs.highlightAuto(code);
         setDetectedLang(result.language || "javascript");
-
-        const prismLang = Prism.languages[result.language] || Prism.languages.javascript;
-        const html = Prism.highlight(code, prismLang, result.language);
-        setHighlighted(html);
     }, [code]);
 
     /* Handle review API */
