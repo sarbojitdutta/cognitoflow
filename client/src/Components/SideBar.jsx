@@ -54,7 +54,7 @@ function SideBar() {
   const navItems = [
     { name: "Home", path: "/", icon: HomeIcon },
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Code Reviewer", path: "/codereview", icon: Code },
+    { name: "Code Lab", path: "/codelab", icon: Code },
     { name: "Live Collaboration", path: "/collaboration", icon: Users },
     { name: "Settings", path: "/settings", icon: Settings },
   ];
