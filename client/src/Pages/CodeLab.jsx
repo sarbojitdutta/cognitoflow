@@ -57,9 +57,9 @@ function Codereview() {
                                 <button
                                     onClick={handleReview}
                                     disabled={loading}
-                                    className="bg-purple-600 hover:bg-purple-700 text-white w-22 mb-2 px-2 py-2 rounded-lg cursor-pointer transition-colors duration-300"
+                                    className="bg-purple-600 hover:bg-purple-700 text-white w-25 mb-2 px-2 py-2 rounded-lg cursor-pointer transition-colors duration-300"
                                 >
-                                    {loading ? "Reviewing..." : "Review"}
+                                    {loading ? "Improving..." : "Audit Code"}
                                 </button>
 
                             </div>

@@ -1,6 +1,5 @@
 import Groq from "groq-sdk";
 
-
 let groq = null;
 const getGroqClient = () =>{
     if(!groq){
