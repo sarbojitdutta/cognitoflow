@@ -1,3 +1,3 @@
 export function testbot() {
-    return <h1>Test Feature Component</h1>;
+    return <div>Test Bot Component</div>;
 }
