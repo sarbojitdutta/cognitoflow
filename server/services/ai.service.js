@@ -14,7 +14,7 @@ const getGroqClient = () =>{
 }
 
 // System prompt for code review instructions
-const SYSTEM_PROMPT = 
+const MANUAL_SYSTEM_PROMPT = 
 `You are an expert senior software engineer.  
 Your task is to take the user’s code and produce a line-by-line improved version of it.
 
@@ -58,6 +58,35 @@ THE FINAL OUTPUT MUST CONTAIN:
 3. No extra text, no explanation outside the specified format.
 
 `;
+
+const PR_SYSTEM_PROMPT = `
+You are an expert Senior Software Engineer reviewing a Pull Request.
+You will receive a collection of file patches (diffs).
+
+YOUR TASKS:
+1. Analyze the changes for:
+   - 🐛 Potential Bugs or Logic Errors
+   - 🔒 Security Vulnerabilities (e.g., injection, secrets, weak auth)
+   - ⚡ Performance Bottlenecks
+   - 🧹 Code Cleanliness & Best Practices
+2. Do NOT rewrite the code line-by-line. Instead, provide a structured review.
+3. Be constructive and specific.
+
+OUTPUT FORMAT (Markdown):
+## 📝 Code Review
+### 🛑 Critical Issues (if any)
+- ...
+
+### ⚠️ Improvements & Suggestions
+- ...
+
+### ✅ Good Practices Detected
+- ...
+
+### 🏁 Final Verdict
+(Approve / Request Changes)
+`;
+
 // Configuration for Groq API requests
 const GROQ_CONFIG = {
     model: "qwen/qwen3-32b",
@@ -67,11 +96,15 @@ const GROQ_CONFIG = {
     stream: false
 };
 
-const generateReview = async (code) => {
+const generateReview = async (code, contextType="manual") => {
     // Check for API key
     if (!process.env.GROQ_API_KEY) {
         throw new Error("GROQ_API_KEY is not set in environment variables");
     }
+    const SYSTEM_PROMPT = contextType === "pr" ? PR_SYSTEM_PROMPT : MANUAL_SYSTEM_PROMPT
+    const userMessage = contextType == "pr" 
+    ? `Here are the file changes(diff) for this PR:\n\n${code}`
+    : `Review this code:\n\n${code}`
 
     try {
         const client = getGroqClient()

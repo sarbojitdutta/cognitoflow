@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.route.js'
 import aiRoutes from './routes/ai.route.js'
 import connectDB from './config/db.js'
 import protect from './middlewares/auth.middleware.js'
+import webhookRoutes from './routes/webhook.route.js'
 
 connectDB()
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRoutes)
 app.use('/api/code', aiRoutes)
+app.use('/api', webhookRoutes)
 
 
 
