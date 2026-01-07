@@ -19,7 +19,7 @@ const rateLimiter = async (req, res, next) => {
             console.log(`⚠️ Blocked IP ${ip}: Too many requests.`)
             return res.status(429).json({message: `Too many requests. Try again in ${ttl} seconds.`})
         }
-        res.setHeader('X-RateLimit-Limit', LIMIT);
+        res.setHeader('X-RateLimit-Limit', LIMIT)
         res.setHeader('X-RateLimit-Remaining', LIMIT - requests)
 
         next()
