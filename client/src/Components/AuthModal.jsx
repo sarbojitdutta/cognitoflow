@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,7 +29,7 @@ export default function AuthModal() {
       }
       dispatch(closeAuth())
     }catch(error){
-      toast.error(err || "Something went wrong",{position: "top-center"})
+      toast.error(error || "Something went wrong",{position: "top-center"})
     }
   }
 
@@ -38,7 +38,7 @@ export default function AuthModal() {
       className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-black/60 z-50"
       onClick={() => dispatch(closeAuth())} // close when clicking outside box
     >
-      <motion.div
+      <Motion.div
         className="relative w-[380px] rounded-2xl bg-white/10 border border-white/20 shadow-2xl backdrop-blur-lg p-8 text-white"
         onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
         initial={{ opacity: 0, scale: 0.8 }}
@@ -54,7 +54,7 @@ export default function AuthModal() {
 
           <AnimatePresence mode="wait">
             {isLogin ? (
-              <motion.form
+              <Motion.form
                 onSubmit={(e) => { handleSubmit(e) }}
                 key="login"
                 initial={{ opacity: 0, y: 20 }}
@@ -86,9 +86,9 @@ export default function AuthModal() {
                 >
                   {loading ? "Loading..." : "Login"}
                 </button>
-              </motion.form>
+              </Motion.form>
             ) : (
-              <motion.form
+              <Motion.form
                 onSubmit={(e) => { handleSubmit(e) }}
                 key="register"
                 initial={{ opacity: 0, y: 20 }}
@@ -128,7 +128,7 @@ export default function AuthModal() {
                 >
                   {loading ? "Loading..." : "Register"}
                 </button>
-              </motion.form>
+              </Motion.form>
             )}
           </AnimatePresence>
         </div>
@@ -154,7 +154,7 @@ export default function AuthModal() {
             </p>
           )}
         </div>
-      </motion.div>
+      </Motion.div>
     </div>
   );
 }
