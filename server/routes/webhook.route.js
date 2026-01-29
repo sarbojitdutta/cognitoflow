@@ -1,16 +1,15 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import  {Octokit}  from '@octokit/rest'
+import { createAppAuth } from '@octokit/auth-app'
+import fs from 'fs';
 import Review from '../models/review.js'
 import  generateReview  from '../services/ai.service.js'
 
 const router = express.Router()
-
 dotenv.config()
 
-const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
-})
+const privateKey = fs.readFileSync(process.env.GITHUB_PRIVATE_KEY_PATH, 'utf8');
 
 router.post("/github-webhook", async (req, res) => {
     const event = req.headers['x-github-event']
@@ -27,6 +26,17 @@ router.post("/github-webhook", async (req, res) => {
         const repoName = payload.repository.name
         const prNumber = payload.number
         const prTitle = payload.pull_request.title
+
+        const installationId = payload.installation.id;
+
+        const octokit = new Octokit({
+            authStrategy: createAppAuth,
+            auth: {
+                appId: process.env.GITHUB_APP_ID,
+                privateKey: privateKey,
+                installationId: installationId,
+            }
+        })
 
         console.log(`Pull Request #${prNumber} in ${repoName} - Action: ${action}, Title: ${prTitle}`)
 
@@ -61,11 +71,14 @@ router.post("/github-webhook", async (req, res) => {
                 await aiReview.save()
                 console.log("   --> AI Review saved to database.")
 
+                const frontendUrl = 'http://localhost:5173'
+                const dashboardLink = `${frontendUrl}/reviews/${repoOwner}/${repoName}/${prNumber}`
+
                 await octokit.issues.createComment({
                     owner: repoOwner,
                     repo: repoName,
                     issue_number: prNumber,
-                    body: `## 🤖 CognitoFlow Review\n\n${aiReviewText}`
+                    body: `## 🤖 CognitoFlow Review\n\n${aiReviewText}\n\n---\n[📊 View Detailed Report](${dashboardLink})`
                 });
 
                 if (fileChanges.length > 0) {

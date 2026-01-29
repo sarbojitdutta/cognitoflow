@@ -19,6 +19,14 @@ const userSChema = new mongoose.Schema({
         default: '',
         maxlength: 200,
     },
+    githubUsername: { 
+        type: String, 
+        default: null 
+    },
+    isGithubconnected: {
+        type: Boolean,
+        default: false
+    }
 
 }, {
     timestamps: true

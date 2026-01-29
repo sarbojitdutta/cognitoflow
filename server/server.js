@@ -9,16 +9,23 @@ import aiRoutes from './routes/ai.route.js'
 import connectDB from './config/db.js'
 import protect from './middlewares/auth.middleware.js'
 import webhookRoutes from './routes/webhook.route.js'
+import dashboardRoutes from './routes/dashboard.route.js'
 
 connectDB()
 
-app.use(cors())
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true,
+    methods:["GET","POST","PUT","DELETE"],
+    allowedHeaders:["Content-Type","Authorization"]
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRoutes)
 app.use('/api/code', aiRoutes)
 app.use('/api', webhookRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 
 

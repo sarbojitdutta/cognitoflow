@@ -3,39 +3,52 @@ import User from '../models/userModel.js'
 import { comparePassword } from '../utils/password.util.js'
 import { hashPassword } from '../utils/password.util.js'
 
-export const register = async (username, email, password)=>{
-    const user = await User.findOne({email: email})
-    if(user) {
+export const register = async (username, email, password) => {
+    const user = await User.findOne({ email: email })
+    if (user) {
         throw new Error('User already exists')
     }
     const hashedPassword = await hashPassword(password)
-    const newUser = await User.create({username: username, email: email, password: hashedPassword})
-    const token = await signToken({id: newUser._id})
+    const newUser = await User.create({ username: username, email: email, password: hashedPassword })
+    const token = await signToken({ id: newUser._id })
     return token
 }
-export const login = async (email, password)=>{
-    const user = await User.findOne({email: email})
-    if(!user) {
+export const login = async (email, password) => {
+    const user = await User.findOne({ email: email })
+    if (!user) {
         throw new Error('User does not exist')
     }
-    
+
     const isValid = await comparePassword(password, user.password)
-    if(!isValid) {
+    if (!isValid) {
         throw new Error('Invalid password')
     }
-    const token = await signToken({id: user._id})
+    const token = await signToken({ id: user._id })
     return token
 }
 
-export const update = async (id, username, email, password, bio)=>{
+export const update = async (id, username, email, password, bio) => {
     const user = await User.findById(id)
-    if(!user) {throw new Error('User does not exist')}
+    if (!user) { throw new Error('User does not exist') }
 
-    if(username) user.username = username
-    if(email) user.email = email
-    if(password) user.password = await hashPassword(password)
-    if(bio !== undefined) user.bio = bio
+    if (username) user.username = username
+    if (email) user.email = email
+    if (password) user.password = await hashPassword(password)
+    if (bio !== undefined) user.bio = bio
     const updatedUser = await user.save()
     return updatedUser
 
+}
+
+export const linkGithub = async (githubUsername, id) => {
+    const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+            githubUsername: githubUsername,
+            isGithubConnected: true
+        },
+        { new: true } // Return the updated document
+    ).select("-password");
+    
+    return updatedUser;
 }
