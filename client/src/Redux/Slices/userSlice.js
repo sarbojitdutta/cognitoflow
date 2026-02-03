@@ -11,6 +11,7 @@ const getConfig = (thunkAPI) => {
     let token = thunkAPI.getState().user.token;
     if (!token) token = localStorage.getItem("token");
     
+    
     return {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -118,7 +119,7 @@ const userSlice = createSlice({
             .addCase(loginUser.pending, (state) => { state.loading = true; state.error = null; })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload.user;
+                state.user = action.payload.user || action.payload;
                 state.token = action.payload.token;
             })
             .addCase(loginUser.rejected, (state, action) => { state.loading = false; state.error = action.payload; })

@@ -22,6 +22,8 @@ function SideBar() {
   const sidebarRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // 1. Get the current user from Redux
   const { user } = useSelector((state) => state.user);
 
   const navItems = [
@@ -32,9 +34,10 @@ function SideBar() {
     { name: "Settings", path: "/settings", icon: Settings },
   ];
 
+  // 3. Logout Logic
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
+    dispatch(logout()); // Clears Redux State
+    navigate("/");      // Redirects to Home
   };
 
   return (
@@ -47,7 +50,7 @@ function SideBar() {
           isExpanded ? "w-64" : "w-20"
         }`}
       >
-        {/* Top Section: Logo & Nav */}
+        {/* --- Top Section: Logo & Nav --- */}
         <div>
           {/* Logo */}
           <div className="flex h-16 items-center gap-3 border-b border-gray-700 px-5">
@@ -63,7 +66,7 @@ function SideBar() {
             </span>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation Items */}
           <nav className="mt-6 flex flex-col gap-2 px-3">
             {navItems.map(({ name, path, icon: Icon }) => {
               const active = location.pathname === path;
@@ -77,7 +80,6 @@ function SideBar() {
                       : "text-gray-400 hover:bg-[#1A1A22] hover:text-gray-100"
                   }`}
                 >
-                  {/* Icon Container to ensure perfect shape alignment */}
                   <div className="flex items-center justify-center shrink-0">
                      <Icon className={`h-5 w-5 ${active ? "text-white" : ""}`} />
                   </div>
@@ -90,7 +92,7 @@ function SideBar() {
                     {name}
                   </span>
 
-                  {/* Tooltip for collapsed state */}
+                  {/* Tooltip (Visible when collapsed) */}
                   {!isExpanded && (
                     <div className="absolute left-full ml-4 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 border border-gray-700 shadow-xl">
                       {name}
@@ -102,10 +104,10 @@ function SideBar() {
           </nav>
         </div>
 
-        {/* Bottom Section: Profile & Login/Logout */}
+        {/* --- Bottom Section: Profile & Auth --- */}
         <div className="border-t border-gray-700 p-3">
           
-          {/* User Profile Display (Only if logged in) */}
+          {/* User Profile (Only visible if logged in) */}
           {user && (
             <div
               className={`mb-3 flex items-center gap-3 rounded-xl bg-[#14141A] p-3 transition-all duration-300 overflow-hidden ${
@@ -126,8 +128,9 @@ function SideBar() {
             </div>
           )}
 
-          {/* Login / Logout Button */}
+          {/* DYNAMIC BUTTON: Switch based on 'user' state */}
           {user ? (
+            // 2. If User Exists -> Show LOGOUT
             <button
               onClick={handleLogout}
               className="group flex w-full items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500 hover:text-white"
@@ -148,6 +151,7 @@ function SideBar() {
               )}
             </button>
           ) : (
+            // 1. & 4. If No User -> Show LOGIN
             <button
               onClick={() => dispatch(openAuth())}
               className="group flex w-full items-center gap-3 rounded-xl bg-[#1A1A22] px-3 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-purple-600 hover:text-white"
@@ -170,6 +174,8 @@ function SideBar() {
           )}
         </div>
       </div>
+      
+      {/* Auth Modal (Hidden by default, opened via Redux) */}
       <AuthModal />
     </>
   );

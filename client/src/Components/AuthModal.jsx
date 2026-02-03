@@ -8,8 +8,8 @@ import { closeAuth } from "../Redux/Slices/uiSlice";
 
 export default function AuthModal() {
   const dispatch = useDispatch();
-  const {loading} = useSelector(state => state.user)
-  const {isOpen} = useSelector(state => state.auth)
+  const { loading, error } = useSelector(state => state.user)
+  const { isOpen } = useSelector(state => state.auth)
 
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ username: "", email: "", password: "" })
@@ -19,17 +19,42 @@ export default function AuthModal() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    try{
-      if(isLogin){
-        await dispatch(loginUser({email: formData.email, password: formData.password})).unwrap()
-        toast.success("Login Successful",{position: "top-center"})
-      }else{
-        await dispatch(registerUser({username: formData.username, email: formData.email, password: formData.password})).unwrap()
-        toast.success("Registration Successful",{position: "top-center"})
+    try {
+      let actionResult;
+
+      if (isLogin) {
+        // 1. Dispatch the action and wait for the result
+        actionResult = await dispatch(loginUser({
+          email: formData.email,
+          password: formData.password
+        }));
+      } else {
+        actionResult = await dispatch(registerUser({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }));
       }
-      dispatch(closeAuth())
-    }catch(error){
-      toast.error(error || "Something went wrong",{position: "top-center"})
+
+      // 2. Check if the action was FULFILLED (Success)
+      if (loginUser.fulfilled.match(actionResult) || registerUser.fulfilled.match(actionResult)) {
+        toast.success(isLogin ? "Login Successful" : "Registration Successful", { position: "top-center" });
+
+        // 3. Close modal ONLY on success
+        dispatch(closeAuth());
+
+        // Optional: Reset form
+        setFormData({ username: "", email: "", password: "" });
+      } else {
+        // 4. Handle Redux Rejection (Backend returned error)
+        // actionResult.payload contains the rejectWithValue message
+        throw new Error(actionResult.payload?.message || "Authentication failed");
+      }
+
+    } catch (error) {
+      // 5. Catch errors (including the one we threw above)
+      console.error("Auth Error:", error);
+      toast.error(error.message || "Something went wrong", { position: "top-center" });
     }
   }
 
@@ -80,9 +105,8 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 ${
-                    loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
-                  }`}
+                  className={`w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
+                    }`}
                 >
                   {loading ? "Loading..." : "Login"}
                 </button>
@@ -122,9 +146,8 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 ${
-                    loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
-                  }`}
+                  className={`w-full py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
+                    }`}
                 >
                   {loading ? "Loading..." : "Register"}
                 </button>

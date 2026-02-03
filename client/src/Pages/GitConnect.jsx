@@ -6,7 +6,7 @@ import { updateUser } from "../Redux/Slices/userSlice"; // Make sure this action
 import { connectGithub } from "../Redux/Slices/userSlice";
 
 const GitConnect = () => {
-    const { user } = useSelector((state) => state.user); // Get logged-in user from Redux
+    const { user, token } = useSelector((state) => state.user); // Get logged-in user from Redux
     const dispatch = useDispatch();
 
     const [connectedUser, setConnectedUser] = useState(null);
@@ -24,7 +24,11 @@ const GitConnect = () => {
             setLoading(false);
         } else {
             // Fallback fetch (optional if Redux is reliable)
-            axios.get("http://localhost:3000/api/user/profile") // You might need to add headers here if this route is protected
+            axios.get("http://localhost:3000/api/user/profile"),{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            } // You might need to add headers here if this route is protected
                 .then(res => {
                     if (res.data.isGithubConnected) {
                         setConnectedUser(res.data.githubUsername);
