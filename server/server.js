@@ -10,6 +10,7 @@ import connectDB from './config/db.js'
 import protect from './middlewares/auth.middleware.js'
 import webhookRoutes from './routes/webhook.route.js'
 import dashboardRoutes from './routes/dashboard.route.js'
+import userRoutes from './routes/auth.route.js'
 
 connectDB()
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/code', aiRoutes)
 app.use('/api', webhookRoutes)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/user', userRoutes)
 
 
 

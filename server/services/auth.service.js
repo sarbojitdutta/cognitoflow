@@ -24,7 +24,16 @@ export const login = async (email, password) => {
         throw new Error('Invalid password')
     }
     const token = await signToken({ id: user._id })
-    return token
+    return {
+        user: {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            githubUsername: user.githubUsername,
+            isGithubconnected: user.isGithubconnected
+        },
+        token: token
+    }
 }
 
 export const update = async (id, username, email, password, bio) => {
