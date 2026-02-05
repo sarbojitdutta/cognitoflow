@@ -28,7 +28,7 @@ const GitConnect = () => {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            } // You might need to add headers here if this route is protected
+            } 
                 .then(res => {
                     if (res.data.isGithubConnected) {
                         setConnectedUser(res.data.githubUsername);
@@ -39,7 +39,7 @@ const GitConnect = () => {
                 .catch(err => console.error("Failed to fetch user profile status", err))
                 .finally(() => setLoading(false));
         }
-    }, [user, dispatch]);
+    }, [user, dispatch, token]);
 
     const handleConnect = async () => {
         if (!githubInput) return alert("Please enter your GitHub username first.");
