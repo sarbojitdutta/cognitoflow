@@ -11,6 +11,7 @@ import protect from './middlewares/auth.middleware.js'
 import webhookRoutes from './routes/webhook.route.js'
 import dashboardRoutes from './routes/dashboard.route.js'
 import userRoutes from './routes/auth.route.js'
+import cookieParser from 'cookie-parser'
 
 connectDB()
 
@@ -22,6 +23,7 @@ app.use(cors({
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 app.use('/api/auth', authRoutes)
 app.use('/api/code', aiRoutes)
