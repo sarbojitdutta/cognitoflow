@@ -8,32 +8,30 @@ import { connectGithub } from "../Redux/Slices/userSlice";
 const GitConnect = () => {
     const { user, token } = useSelector((state) => state.user); // Get logged-in user from Redux
     const dispatch = useDispatch();
-
     const [connectedUser, setConnectedUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [githubInput, setGithubInput] = useState(""); // State for the input field
     const [isConnecting, setIsConnecting] = useState(false);
 
-    // Your GitHub App Install URL
     const githubAppUrl = "https://github.com/apps/cognitoflow-bot/installations/new";
 
     useEffect(() => {
-        // If Redux already has the info, use it. Otherwise, fetch it.
         if (user?.githubUsername) {
             setConnectedUser(user.githubUsername);
             setLoading(false);
         } else {
             // Fallback fetch (optional if Redux is reliable)
-            axios.get("http://localhost:3000/api/user/profile"),{
+            axios.get("http://localhost:3000/api/user/profile",{
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            } 
+            }) 
                 .then(res => {
-                    if (res.data.isGithubConnected) {
-                        setConnectedUser(res.data.githubUsername);
+                    const userData = res.data.user || res.data
+                    if (userData.isGithubConnected) {
+                        setConnectedUser(userData.githubUsername);
                         // Sync Redux if needed
-                        dispatch(updateUser(res.data));
+                        dispatch(updateUser(userData));
                     }
                 })
                 .catch(err => console.error("Failed to fetch user profile status", err))
