@@ -1,6 +1,7 @@
 import { register, login, update } from '../services/auth.service.js'
 import { cookieOptions } from '../config/cookies.config.js'
 import { linkGithub } from '../services/auth.service.js'
+import User from '../models/userModel.js'
 export const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body
@@ -49,10 +50,46 @@ export const linkGithubUser = async (req, res) => {
         }
 
         const updatedUser = await linkGithub(githubUsername, id)
-        res.status(200).json({ message: "GitHub account linked successfully", user: updatedUser })
+        res.status(200).json(updatedUser)
         
     }catch (error){
         console.error("Link GitHub Error:", error);
         res.status(500).json({ message: "Server Error" });
+    }
+}
+
+export const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password')
+        if(!user){
+            return res.status(404).json({ message: 'User not found' })
+        }
+        res.json(user)
+    }catch(error){
+        res.status(500).json({ message: 'Server error' })
+    }
+}
+
+export const disconnectGithub = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id)
+        if(!user){
+            return res.status(404).json({ message: 'User not found' })
+            user.githubUsername = null
+            user.isGithubconnected = false
+            await user.save()
+            res.status(200).json({ message: 'GitHub disconnected successfully' })
+            res.status(200).json({
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                githubUsername: null,
+                isGithubconnected: false
+            })
+        }else{
+            res.status(404).json({ message: 'User not found' })
+        }
+    }catch(error){
+        res.status(500).json({ message: 'Server error' })
     }
 }

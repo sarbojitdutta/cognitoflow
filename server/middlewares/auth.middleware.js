@@ -1,11 +1,11 @@
 import { verifyToken } from "../utils/token.util.js";
 
-const protect = (req, res, next)=> {
+const protect = async (req, res, next) => {
   const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "No token provided" });
 
   try {
-    const decoded = verifyToken(token);
+    const decoded = await verifyToken(token);
     req.user = decoded;
     next();
   } catch (err) {

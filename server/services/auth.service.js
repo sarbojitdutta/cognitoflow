@@ -54,7 +54,7 @@ export const linkGithub = async (githubUsername, id) => {
         id,
         {
             githubUsername: githubUsername,
-            isGithubConnected: true
+            isGithubconnected: true
         },
         { new: true } // Return the updated document
     ).select("-password");
