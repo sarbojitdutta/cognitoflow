@@ -1,4 +1,6 @@
 import Groq from "groq-sdk";
+import path from "path";
+import { generateFileTree } from "../utils/generateFileTree.util.js"; 
 
 let groq = null;
 const getGroqClient = () =>{
@@ -58,10 +60,15 @@ THE FINAL OUTPUT MUST CONTAIN:
 3. No extra text, no explanation outside the specified format.
 
 `;
+const projectRoot = path.resolve(process.cwd(), '../')
+const fileStructure = generateFileTree(projectRoot)
 
 const PR_SYSTEM_PROMPT = `
 You are an expert Senior Software Engineer reviewing a Pull Request.
 You will receive a collection of file patches (diffs).
+
+Here is the overall file structure of the project:
+${fileStructure}
 
 YOUR TASKS:
 1. Analyze the changes for:
