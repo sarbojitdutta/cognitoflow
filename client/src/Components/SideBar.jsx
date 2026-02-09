@@ -54,8 +54,8 @@ function SideBar() {
         <div>
           {/* Logo */}
           <div className="flex h-16 items-center gap-3 border-b border-gray-700 px-5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-600 shadow-lg shadow-purple-900/20">
-              <Workflow className="h-6 w-6 text-white" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-lg shadow-purple-900/20">
+              <img src="src/assets/Untitled design.png" alt="Logo" className="h-10 w-10 rounded-xl bg-[#0B0B0F]" />
             </div>
             <span
               className={`text-lg font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent whitespace-nowrap overflow-hidden transition-all duration-300 ${
