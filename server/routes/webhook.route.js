@@ -62,10 +62,15 @@ router.post("/github-webhook", async (req, res) => {
                 const aiReviewText = await generateReview(fileChanges)
 
                 const aiReview = new Review({
-                    repoName: `${repoName}/${repoOwner}`,
+                    userId: payload.sender.id,
+                    repoOwner: `${repoOwner}`,
+                    repoName: `${repoName}`,
                     prNumber: prNumber,
                     prTitle: prTitle,
                     filesChanged: fileChanges.map(f => f.filename),
+                    bugFound: aiReviewText.bugFound,
+                    additions: payload.pull_request.additions,
+                    deletions: payload.pull_request.deletions,
                     aiReview: aiReviewText
                 })
                 await aiReview.save()
@@ -78,7 +83,7 @@ router.post("/github-webhook", async (req, res) => {
                     owner: repoOwner,
                     repo: repoName,
                     issue_number: prNumber,
-                    body: `## 🤖 CognitoFlow Review\n\n${aiReviewText}\n\n---\n[📊 View Detailed Report](${dashboardLink})`
+                    body: `## 🤖 CognitoFlow Review\n\n${aiReviewText.reviewComments}\n\n---\n[📊 View Detailed Report](${dashboardLink})`
                 });
 
                 if (fileChanges.length > 0) {

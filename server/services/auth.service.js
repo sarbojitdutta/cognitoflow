@@ -49,15 +49,3 @@ export const update = async (id, username, email, password, bio) => {
 
 }
 
-export const linkGithub = async (githubUsername, id) => {
-    const updatedUser = await User.findByIdAndUpdate(
-        id,
-        {
-            githubUsername: githubUsername,
-            isGithubconnected: true
-        },
-        { new: true } // Return the updated document
-    ).select("-password");
-    
-    return updatedUser;
-}

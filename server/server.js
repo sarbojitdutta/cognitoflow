@@ -21,6 +21,10 @@ app.use(cors({
     methods:["GET","POST","PUT","DELETE"],
     allowedHeaders:["Content-Type","Authorization"]
 }))
+
+// Webhook route must have raw body BEFORE JSON parsing for signature verification
+app.use('/api/github-webhook', express.raw({type: 'application/json'}))
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
@@ -30,6 +34,7 @@ app.use('/api/code', aiRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api', webhookRoutes)
+
 
 
 

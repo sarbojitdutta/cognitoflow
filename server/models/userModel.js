@@ -27,6 +27,19 @@ const userSChema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+    ,
+    githubInstallationId: {
+        type: Number,
+        default: null
+    },
+    connectedRepos: [{
+        repoId: String,
+        displayName: String,
+        full_name: String, // e.g., "sarbojit/cognitoFlow"
+        isPrivate: Boolean,
+        url: String
+    }],
+
 
 }, {
     timestamps: true

@@ -79,19 +79,24 @@ YOUR TASKS:
 2. Do NOT rewrite the code line-by-line. Instead, provide a structured review.
 3. Be constructive and specific.
 
-OUTPUT FORMAT (Markdown):
-## 📝 Code Review
-### 🛑 Critical Issues (if any)
-- ...
+OUTPUT FORMAT (JSON):
+Use this exact JSON schema:
+{
+  "reviewComments": "
+    ### 📝 Code Review
+    ### 🛑 Critical Issues (if any)
+    - ...
 
-### ⚠️ Improvements & Suggestions
-- ...
+    ### ⚠️ Improvements & Suggestions
+    - ...
 
-### ✅ Good Practices Detected
-- ...
+    ### ✅ Good Practices Detected
+    - ...
 
-### 🏁 Final Verdict
-(Approve / Request Changes)
+    ### 🏁 Final Verdict
+    (Approve / Request Changes)",
+  "bugsFound": <integer, count of actual bugs/errors found in the code>
+}
 `;
 
 // Configuration for Groq API requests
@@ -119,6 +124,7 @@ const generateReview = async (code, contextType="manual") => {
         // Make API request to Groq
         const completion = await client.chat.completions.create({
             ...GROQ_CONFIG,
+            response_format: {type: "json_object"},
             messages: [
                 {
                     role: "system",

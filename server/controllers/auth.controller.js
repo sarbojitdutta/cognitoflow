@@ -1,7 +1,7 @@
 import { register, login, update } from '../services/auth.service.js'
 import { cookieOptions } from '../config/cookies.config.js'
-import { linkGithub } from '../services/auth.service.js'
 import User from '../models/userModel.js'
+import { getGithubProfile, getOAuthToken } from '../services/github.service.js'
 export const registerUser = async (req, res) => {
     try {
         const { username, email, password } = req.body
@@ -40,56 +40,80 @@ export const updateUser = async (req, res) => {
 
 }
 
-export const linkGithubUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
     try {
-        const {githubUsername} = req.body
-        const id = req.user.id
-
-        if (!githubUsername) {
-            return res.status(400).json({ message: "GitHub username is required" });
-        }
-
-        const updatedUser = await linkGithub(githubUsername, id)
-        res.status(200).json(updatedUser)
-        
-    }catch (error){
-        console.error("Link GitHub Error:", error);
-        res.status(500).json({ message: "Server Error" });
+        res.clearCookie('authToken')
+        res.status(200).json({ message: "Logout Successful" })
+    } catch (error) {
+        res.status(500).json({ message: "Failed to Logout", error: error.message })
     }
 }
 
-export const getUserProfile = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select('-password')
-        if(!user){
-            return res.status(404).json({ message: 'User not found' })
-        }
-        res.json(user)
-    }catch(error){
-        res.status(500).json({ message: 'Server error' })
+export const connectGithub = async (req, res) => {
+    const { code } = req.body
+    const userId = req.user.id
+
+    if(!code){
+        res.status(400).json({ message: "Authorization code is required"})
     }
+
+    const accessToken = await getOAuthToken(code)
+    const githubProfile = await getGithubProfile(accessToken)
+
+    const existingUser = await User.findOne({githubId: githubProfile.id})
+
+    if(existingUser){
+        if(existingUser._id.toString() !== userId){
+            res.status(409).json({ message: "You are already connected to another account"})
+        }
+    }
+
+    const updateUser = User.findByIdAndDelete(
+        userId,
+        {
+            $set:{
+                githubId: githubProfile.id,
+                githubUsername: githubProfile.githubUsername,
+                email: githubProfile.email,
+                isGithubconnected: true
+            },
+        },
+        { new: true }
+    ).select("-password")
+
+    res.status(200).json({
+        success: true,
+        message: "Github App connected successfully",
+        user: updateUser
+    })
 }
 
-export const disconnectGithub = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id)
-        if(!user){
-            return res.status(404).json({ message: 'User not found' })
-            user.githubUsername = null
-            user.isGithubconnected = false
-            await user.save()
-            res.status(200).json({ message: 'GitHub disconnected successfully' })
-            res.status(200).json({
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                githubUsername: null,
-                isGithubconnected: false
-            })
-        }else{
-            res.status(404).json({ message: 'User not found' })
-        }
+export const disconnectGithub = async () =>{
+    try{
+        const userId = req.user.id
+
+        const updateUser = User.findByIdAndDelete(
+            userId,
+            {
+                $unset: {
+                    githubId: "",
+                    githubUsername: "",
+                    email: "",
+                    accessToken: "",
+                },
+                $set: {
+                    isGithubconnected: false,
+                }
+            },
+            {new: true}
+        ).select("-password")
+
+        res.status(200).json({
+            success: true,
+            message: "Github App disconnected successfully",
+            user: updateUser
+        })
     }catch(error){
-        res.status(500).json({ message: 'Server error' })
+        res.status(500).json({ message: "Failed to Disconnect Github", error: error.message })
     }
 }
