@@ -43,4 +43,17 @@ body {
   background: rgba(255, 255, 255, 0.35);
 }
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;           /* kill main window scrollbar completely */
+}
+
+#root {
+  overflow-y: auto;           /* only allow scrolling inside the app root */
+  overflow-x: clip;
+  height: 100vh;              /* force exact viewport height */
+  overscroll-behavior: none;  /* nicer mobile bounce */
+}
 @plugin "@tailwindcss/typography"

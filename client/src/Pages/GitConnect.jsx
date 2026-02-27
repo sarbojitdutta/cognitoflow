@@ -1,175 +1,163 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { FaGithub, FaCheckCircle, FaTimesCircle, FaLink } from "react-icons/fa";
-import { updateUser } from "../Redux/Slices/userSlice"; // Make sure this action exists in your slice
-import { connectGithub } from "../Redux/Slices/userSlice";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { disconnectGithub } from '../Redux/Slices/userSlice';
 
-const GitConnect = () => {
-    const { user, token } = useSelector((state) => state.user); // Get logged-in user from Redux
-    const dispatch = useDispatch();
-    const [connectedUser, setConnectedUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [githubInput, setGithubInput] = useState(""); // State for the input field
-    const [isConnecting, setIsConnecting] = useState(false);
+export const GitConnect = () => {
+  const dispatch = useDispatch();
+  const { user, loading } = useSelector((state) => state.user);
 
-    const githubAppUrl = "https://github.com/apps/cognitoflow-bot/installations/new";
+  const handleConnect = () => {
+    window.location.href = 'https://github.com/apps/cognitoflow-bot/installations/new';
+  };
 
-    useEffect(() => {
-        if (user?.githubUsername) {
-            setConnectedUser(user.githubUsername);
-            setLoading(false);
-        } else {
-            // Fallback fetch (optional if Redux is reliable)
-            axios.get("http://localhost:3000/api/user/profile",{
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }) 
-                .then(res => {
-                    const userData = res.data.user || res.data
-                    if (userData.isGithubConnected) {
-                        setConnectedUser(userData.githubUsername);
-                        // Sync Redux if needed
-                        dispatch(updateUser(userData));
-                    }
-                })
-                .catch(err => console.error("Failed to fetch user profile status", err))
-                .finally(() => setLoading(false));
-        }
-    }, [user, dispatch, token]);
+  const handleDisconnect = () => {
+    dispatch(disconnectGithub());
+  };
 
-    const handleConnect = async () => {
-        if (!githubInput) return alert("Please enter your GitHub username first.");
+  const isConnected = user?.isGithubconnected;
+  const githubUsername = user?.githubUsername;
 
-        setIsConnecting(true);
+  return (
+    <div className="flex items-center justify-center p-4 bg-[#0a0a0a] min-h-screen relative overflow-hidden">
 
+      
 
-        // 1. Open GitHub Installation in a new tab
-        window.open(githubAppUrl, "_blank");
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-sm bg-[#0a0a0a] backdrop-blur-xl rounded-3xl shadow-2xl shadow-black/60 overflow-hidden border border-emerald-900/40 hover:border-emerald-700/40 transition-all duration-500 hover:shadow-emerald-900/20 font-sans">
 
-        dispatch(connectGithub(githubInput))
-            .unwrap() // Allows us to catch errors locally if needed
-            .then((updatedUser) => {
-                setConnectedUser(updatedUser.githubUsername);
-                setGithubInput("");
-            })
-            .catch((err) => {
-                console.error("Redux Connection Failed:", err);
-                alert("Failed to link account.");
-            })
-            .finally(() => setIsConnecting(false));
+        {isConnected ? (
+          /* ── Connected State ── */
+          <div className="p-8 flex flex-col items-center text-center">
 
-    };
-    return (
-        <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-            {/* Main Card */}
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-8 text-center">
-
-                {/* Header Icon */}
-                <div className="flex justify-center mb-6">
-                    <div className="bg-gray-800 p-4 rounded-full border border-gray-700 shadow-lg shadow-purple-900/10">
-                        <FaGithub className="text-white text-4xl" />
-                    </div>
-                </div>
-
-                {/* Title & Description */}
-                <h1 className="text-2xl font-bold text-white mb-3">
-                    GitHub Integration
-                </h1>
-                <p className="text-gray-400 text-sm leading-relaxed mb-8 px-4">
-                    Connect your repository to <span className="text-blue-400 font-medium">CognitoFlow</span> to enable automatic AI code reviews,
-                    PR summaries, and instant feedback directly in your workflow.
-                </p>
-
-                {/* --- ACTION SECTION --- */}
-                <div className="mb-8 space-y-4">
-
-                    {/* Input Field (Only show if NOT connected) */}
-                    {!connectedUser && (
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span className="text-gray-500 font-bold">@</span>
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Enter your GitHub Username"
-                                className="w-full bg-gray-950 border border-gray-700 text-white text-sm rounded-lg block pl-8 p-2.5 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-600 transition-colors"
-                                value={githubInput}
-                                onChange={(e) => setGithubInput(e.target.value)}
-                            />
-                            <p className="text-[10px] text-gray-500 mt-1 text-left ml-1">
-                                * Must match your exact GitHub username
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Connect Button */}
-                    {connectedUser ? (
-                        <a href={githubAppUrl} target="_blank" rel="noopener noreferrer">
-                            <button className="w-full bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2 border border-gray-600">
-                                <FaGithub className="text-lg" />
-                                Manage Repositories
-                            </button>
-                        </a>
-                    ) : (
-                        <button
-                            onClick={handleConnect}
-                            disabled={isConnecting}
-                            className={`w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-green-900/20 ${isConnecting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                        >
-                            {isConnecting ? (
-                                <>Loading...</>
-                            ) : (
-                                <>
-                                    <FaLink className="text-sm" />
-                                    Link & Connect GitHub
-                                </>
-                            )}
-                        </button>
-                    )}
-                </div>
-
-                {/* --- STATUS SECTION --- */}
-                <div className="border-t border-gray-800 pt-6 text-left">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                        Connection Status
-                    </h3>
-
-                    {loading ? (
-                        <div className="animate-pulse flex items-center space-x-3 bg-gray-800/50 p-3 rounded-lg">
-                            <div className="h-4 w-4 bg-gray-700 rounded-full"></div>
-                            <div className="h-3 w-32 bg-gray-700 rounded"></div>
-                        </div>
-                    ) : connectedUser ? (
-                        // Connected State
-                        <div className="flex items-center justify-between bg-gray-800/40 border border-green-900/30 p-3 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <FaCheckCircle className="text-green-500 text-lg" />
-                                <div>
-                                    <p className="text-[10px] text-gray-400 uppercase">Connected as</p>
-                                    <p className="text-sm font-bold text-white">@{connectedUser}</p>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => alert("Disconnect logic not implemented yet")}
-                                className="text-xs text-red-400 hover:text-red-300 border border-red-900/50 hover:bg-red-900/20 px-3 py-1.5 rounded transition"
-                            >
-                                Disconnect
-                            </button>
-                        </div>
-                    ) : (
-                        // Disconnected State
-                        <div className="flex items-center gap-3 bg-gray-800/40 border border-gray-700 p-3 rounded-lg">
-                            <FaTimesCircle className="text-gray-500 text-lg" />
-                            <span className="text-gray-400 text-sm">Not connected yet</span>
-                        </div>
-                    )}
-                </div>
+            {/* Success Icon */}
+            <div className="mb-6 relative">
+              <div className="h-20 w-20 bg-gradient-to-br from-emerald-600/30 to-green-800/20 rounded-full flex items-center justify-center relative z-10 border border-emerald-500/30 shadow-lg shadow-emerald-900/30">
+                <svg className="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              {/* Pulsing ring */}
+              <div className="absolute top-0 left-0 h-20 w-20 bg-emerald-500 rounded-full animate-ping opacity-10 z-0" />
+              <div className="absolute top-0 left-0 h-20 w-20 bg-emerald-400 rounded-full animate-pulse opacity-5 z-0" />
             </div>
-        </div>
-    );
 
+            {/* Title */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-1.5 h-5 bg-gradient-to-b from-emerald-400 to-green-600 rounded-full" />
+              <h2 className="text-2xl font-extrabold text-white">Account Linked!</h2>
+            </div>
+
+            <p className="text-gray-400 mb-3 text-sm">
+              Connected as{' '}
+              <span className="font-bold text-emerald-400">@{githubUsername}</span>
+            </p>
+
+            {/* Badge */}
+            <span className="text-xs text-emerald-300 font-medium bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full mb-8 tracking-wide">
+              ✦ Ready for AI Reviews
+            </span>
+
+            {/* Stats row */}
+            <div className="w-full grid grid-cols-2 gap-3 mb-8">
+              <div className="bg-[#0f1a0f] border border-emerald-900/40 rounded-2xl p-3 text-center">
+                <p className="text-emerald-400 text-lg font-bold">Active</p>
+                <p className="text-gray-600 text-xs mt-0.5">Connection</p>
+              </div>
+              <div className="bg-[#0f1a0f] border border-emerald-900/40 rounded-2xl p-3 text-center">
+                <p className="text-green-400 text-lg font-bold">AI</p>
+                <p className="text-gray-600 text-xs mt-0.5">Reviews On</p>
+              </div>
+            </div>
+
+            {/* Disconnect Button */}
+            <button
+              onClick={handleDisconnect}
+              disabled={loading}
+              className="w-full group flex items-center justify-center gap-2 py-3 px-6 border border-red-600/50 hover:border-red-500 text-red-500 hover:text-red-400 font-bold rounded-2xl bg-red-500/5 hover:bg-red-500/10 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <svg className="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Disconnect GitHub
+                </>
+              )}
+            </button>
+          </div>
+
+        ) : (
+          /* ── Disconnected State ── */
+          <div className="flex flex-col">
+
+            {/* Top Header Banner */}
+            <div className="bg-gradient-to-br from-emerald-700 via-green-700 to-emerald-800 p-8 flex flex-col items-center text-center text-white relative overflow-hidden">
+              {/* Banner glow overlay */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.06),transparent_60%)]" />
+              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent" />
+
+              {/* GitHub icon */}
+              <div className="relative z-10 w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center mb-5 shadow-xl">
+                <svg fill="currentColor" className="w-12 h-12 text-white" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+              </div>
+
+              <h2 className="relative z-10 text-2xl font-extrabold mb-2 tracking-tight">Supercharge your Workflow</h2>
+              <p className="relative z-10 text-emerald-100/80 text-sm">
+                Connect GitHub to enable automatic AI Pull Request reviews.
+              </p>
+            </div>
+
+            {/* Bottom Action Area */}
+            <div className="p-8 flex flex-col gap-6">
+
+              {/* Feature list */}
+              <div className="space-y-3">
+                {[
+                  { label: "Instant AI Feedback on every PR" },
+                  { label: "Secure OAuth Connection" },
+                  { label: "Auto bug detection & suggestions" },
+                ].map(({ label }) => (
+                  <div key={label} className="flex items-center gap-3 text-sm text-gray-400">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center shrink-0">
+                      <svg className="w-3 h-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    {label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="h-px bg-gradient-to-r from-transparent via-emerald-900/60 to-transparent" />
+
+              {/* Connect Button */}
+              <button
+                onClick={handleConnect}
+                className="w-full py-4 px-6 bg-emerald-500 text-black text-base font-bold rounded-2xl shadow-xl shadow-emerald-900/40 hover:shadow-emerald-900/60 transition-all duration-200 hover:-translate-y-0.5 flex items-center justify-center gap-3 group"
+              >
+                <span>Connect GitHub Now</span>
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+
+              <p className="text-xs text-gray-600 text-center">
+                You will be redirected to GitHub to authorize.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default GitConnect;

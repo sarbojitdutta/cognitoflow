@@ -7,6 +7,7 @@ import CodeLab from "../Pages/CodeLab"
 import ProtectedRoute from "../Components/ProtectedRoute"
 import ReviewDashboard from "../Components/reviewDashboard"
 import GitConnect from "../Pages/GitConnect"
+import GitCallback from "../Pages/GitCallback"
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { rehydrateUser } from "../Redux/Slices/userSlice"
@@ -24,9 +25,10 @@ function Routing(){
                     <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
                     <Route path="/codelab" element={<CodeLab/>}/>
                     <Route path="/connect" element={<ProtectedRoute><GitConnect/></ProtectedRoute>}/>                      
-                    <Route path="/settings" element={<Settings/>}/>
+                    <Route path="/settings" element={<ProtectedRoute><Settings/></ProtectedRoute>}/>
                     <Route path="/reviews" element={<ReviewDashboard/>}/>
                     <Route path="/reviews/:owner/:repo/:prNumber" element={<ReviewDashboard/>}/>
+                    <Route path="/github-callback" element={<GitCallback/>}/>
                 </Route>   
             </Routes>
         </div>

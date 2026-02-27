@@ -5,7 +5,6 @@ import {
   Code,
   Users,
   Settings,
-  Workflow,
   User,
   LogIn,
   LogOut,
@@ -23,7 +22,6 @@ function SideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // 1. Get the current user from Redux
   const { user } = useSelector((state) => state.user);
 
   const navItems = [
@@ -34,10 +32,9 @@ function SideBar() {
     { name: "Settings", path: "/settings", icon: Settings },
   ];
 
-  // 3. Logout Logic
   const handleLogout = () => {
-    dispatch(logout()); // Clears Redux State
-    navigate("/");      // Redirects to Home
+    dispatch(logout());
+    navigate("/");
   };
 
   return (
@@ -46,19 +43,22 @@ function SideBar() {
         ref={sidebarRef}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
-        className={`flex h-screen flex-col justify-between border-r border-gray-700 bg-[#0B0B0F] text-gray-200 transition-all duration-300 ease-in-out ${
+        className={`flex h-screen flex-col justify-between border-r border-emerald-900/30 bg-[#0a0a0a] text-gray-200 transition-all duration-300 ease-in-out ${
           isExpanded ? "w-64" : "w-20"
         }`}
       >
-        {/* --- Top Section: Logo & Nav --- */}
+        {/* Top Section: Logo & Nav */}
         <div>
-          {/* Logo */}
-          <div className="flex h-16 items-center gap-3 border-b border-gray-700 px-5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-lg shadow-purple-900/20">
-              <img src="src/assets/Untitled design.png" alt="Logo" className="h-10 w-10 rounded-xl bg-[#0B0B0F]" />
+          {/* Logo Header */}
+          <div className="flex h-16 items-center gap-3 border-b border-emerald-900/30 px-5">
+            {/* CF Logo */}
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-green-700 shadow-lg shadow-emerald-900/30 border border-emerald-500/20">
+              <span className="text-lg font-black text-white tracking-tighter">CF</span>
             </div>
+            
+            {/* App Name */}
             <span
-              className={`text-lg font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent whitespace-nowrap overflow-hidden transition-all duration-300 ${
+              className={`text-lg font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent whitespace-nowrap overflow-hidden transition-all duration-300 ${
                 isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0"
               }`}
             >
@@ -76,12 +76,12 @@ function SideBar() {
                   to={path}
                   className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200 relative group ${
                     active
-                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-900/20"
-                      : "text-gray-400 hover:bg-[#1A1A22] hover:text-gray-100"
+                      ? "bg-[#00ffa3] text-black shadow-lg shadow-emerald-900/30"
+                      : "text-gray-500 hover:bg-[#0a110a] hover:text-gray-200 hover:border-emerald-900/20"
                   }`}
                 >
                   <div className="flex items-center justify-center shrink-0">
-                     <Icon className={`h-5 w-5 ${active ? "text-white" : ""}`} />
+                    <Icon className={`h-5 w-5 ${active ? "text-black" : ""}`} />
                   </div>
 
                   <span
@@ -92,9 +92,9 @@ function SideBar() {
                     {name}
                   </span>
 
-                  {/* Tooltip (Visible when collapsed) */}
+                  {/* Tooltip (visible when collapsed) */}
                   {!isExpanded && (
-                    <div className="absolute left-full ml-4 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 border border-gray-700 shadow-xl">
+                    <div className="absolute left-full ml-4 px-3 py-1.5 bg-[#0a110a] border border-emerald-900/40 text-emerald-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl shadow-black/40">
                       {name}
                     </div>
                   )}
@@ -104,36 +104,36 @@ function SideBar() {
           </nav>
         </div>
 
-        {/* --- Bottom Section: Profile & Auth --- */}
-        <div className="border-t border-gray-700 p-3">
+        {/* Bottom Section: Profile & Auth */}
+        <div className="border-t border-emerald-900/30 p-3">
           
-          {/* User Profile (Only visible if logged in) */}
+          {/* User Profile (only if logged in) */}
           {user && (
             <div
-              className={`mb-3 flex items-center gap-3 rounded-xl bg-[#14141A] p-3 transition-all duration-300 overflow-hidden ${
+              className={`mb-3 flex items-center gap-3 rounded-xl bg-[#0a110a]/80 backdrop-blur-sm border border-emerald-900/30 p-3 transition-all duration-300 overflow-hidden ${
                 isExpanded ? "opacity-100 translate-y-0" : "hidden opacity-0"
               }`}
             >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-indigo-500">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 shadow-md shadow-emerald-900/30">
                 <User className="h-4 w-4 text-white" />
               </div>
               <div className="overflow-hidden">
                 <p className="text-sm font-semibold text-white truncate">
                   {user.username || "User"}
                 </p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-xs text-gray-600 truncate">
                   {user.email || "Member"}
                 </p>
               </div>
             </div>
           )}
 
-          {/* DYNAMIC BUTTON: Switch based on 'user' state */}
+          {/* Dynamic Button: Login/Logout */}
           {user ? (
-            // 2. If User Exists -> Show LOGOUT
+            // Logout Button
             <button
               onClick={handleLogout}
-              className="group flex w-full items-center gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-500 hover:text-white"
+              className="group flex w-full items-center gap-3 rounded-xl border border-red-600/30 bg-red-500/10 px-3 py-3 text-sm font-medium text-red-400 transition-all hover:bg-red-600 hover:text-white hover:border-red-500 relative"
             >
               <LogOut className="h-5 w-5 shrink-0" />
               <span
@@ -145,16 +145,16 @@ function SideBar() {
               </span>
               
               {!isExpanded && (
-                <div className="absolute left-full ml-4 px-2 py-1 bg-red-900 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl">
+                <div className="absolute left-full ml-4 px-3 py-1.5 bg-red-900 border border-red-700 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl">
                   Log Out
                 </div>
               )}
             </button>
           ) : (
-            // 1. & 4. If No User -> Show LOGIN
+            // Login Button
             <button
               onClick={() => dispatch(openAuth())}
-              className="group flex w-full items-center gap-3 rounded-xl bg-[#1A1A22] px-3 py-3 text-sm font-medium text-gray-300 transition-all hover:bg-purple-600 hover:text-white"
+              className="group flex w-full items-center gap-3 rounded-xl bg-[#0a110a] border border-emerald-900/30 px-3 py-3 text-sm font-medium text-gray-400 transition-all hover:bg-gradient-to-r hover:from-emerald-600 hover:to-green-600 hover:text-white hover:border-emerald-500/30 relative"
             >
               <LogIn className="h-5 w-5 shrink-0" />
               <span
@@ -166,7 +166,7 @@ function SideBar() {
               </span>
 
               {!isExpanded && (
-                <div className="absolute left-full ml-4 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 border border-gray-700 shadow-xl">
+                <div className="absolute left-full ml-4 px-3 py-1.5 bg-[#0a110a] border border-emerald-900/40 text-emerald-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl shadow-black/40">
                   Log In
                 </div>
               )}
@@ -175,7 +175,7 @@ function SideBar() {
         </div>
       </div>
       
-      {/* Auth Modal (Hidden by default, opened via Redux) */}
+      {/* Auth Modal */}
       <AuthModal />
     </>
   );

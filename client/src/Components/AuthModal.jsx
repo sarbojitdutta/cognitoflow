@@ -107,7 +107,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
+                  className={`w-full py-2 text-black rounded-lg bg-[#00ffa3] hover:bg-[#00e69a] ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
                     }`}
                 >
                   {loading ? "Loading..." : "Login"}
@@ -148,7 +148,7 @@ export default function AuthModal() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
+                  className={`w-full py-2 text-black rounded-lg bg-[#00ffa3] hover:bg-[#00e69a] ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
                     }`}
                 >
                   {loading ? "Loading..." : "Register"}
@@ -165,7 +165,7 @@ export default function AuthModal() {
               Don’t have an account?{" "}
               <button
                 onClick={() => setIsLogin(false)}
-                className="text-purple-400 hover:underline cursor-pointer"
+                className="text-[#00ffa3] hover:underline cursor-pointer"
               >
                 Create one
               </button>
@@ -173,7 +173,7 @@ export default function AuthModal() {
           ) : (
             <p>
               Already have an account?{" "}
-              <button onClick={() => setIsLogin(true)} className="text-purple-400 hover:underline cursor-pointer">
+              <button onClick={() => setIsLogin(true)} className="text-[#00ffa3] hover:underline cursor-pointer">
                 Login here
               </button>
             </p>

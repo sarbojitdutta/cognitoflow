@@ -46,33 +46,49 @@ export const loginUser = createAsyncThunk("user/login", async (formdata, thunkAP
 
 export const updateUser = createAsyncThunk("user/update", async (formData, thunkAPI) => {
     try {
-        
+        console.log("token:", thunkAPI.getState().user.token);
         const res = await axios.put(`${API_ROUTE}/update`, formData, getConfig(thunkAPI));
         
         localStorage.setItem("user", JSON.stringify(res.data)); // Update local storage
-        return res.data;
+        return res.data.user;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data || "Update failed");
     }
 });
 
 //  Handle GitHub Connection
-export const connectGithub = createAsyncThunk("user/connectGithub", async (githubUsername, thunkAPI) => {
-    try {
-        const res = await axios.put(
-            `${API_ROUTE}/github-connect`, 
-            { githubUsername }, 
+export const connectGithub = createAsyncThunk("user/connectGithub", async (code, thunkAPI) => {
+    try{
+        const res = await axios.post(`${API_ROUTE}/github/connect`,
+            {code},
             getConfig(thunkAPI)
-        );
-        
-        // Update local storage immediately so it persists on refresh
-        localStorage.setItem("user", JSON.stringify(res.data));
-        
-        return res.data; // Returns the updated User object
-    } catch (error) {
-        return thunkAPI.rejectWithValue(error.response?.data || "Connection failed");
+        )
+
+        const updatedUser = res.data.user
+        localStorage.setItem("user", JSON.stringify(updatedUser))
+
+        return updatedUser
+    }catch(error){
+        return thunkAPI.rejectWithValue(error.response?.data?.message || "Github connection failed")
     }
 });
+
+export const disconnectGithub = createAsyncThunk("user/disconnectGithub", async (_, thunkAPI) => {
+    try{
+        const res = await axios.post(`${API_ROUTE}/github/disconnect`,
+            getConfig(thunkAPI)
+        )
+
+        const updatedUser = res.data.user
+        localStorage.setItem("user", JSON.stringify(updatedUser))
+        return updatedUser
+    }catch(error){
+        return thunkAPI.rejectWithValue(error.response?.data?.message || "Github disconnection failed")
+    }
+})
+
+
+
 
 const userSlice = createSlice({
     name: "user",
@@ -132,16 +148,35 @@ const userSlice = createSlice({
             })
             .addCase(updateUser.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
 
-            // 👇 CONNECT GITHUB CASES
-            .addCase(connectGithub.pending, (state) => { state.loading = true; })
+            //github connection
+            .addCase(connectGithub.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
             .addCase(connectGithub.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload; // Updates Redux state with new Github info
+                state.user = action.payload; // Updates the global user with the new GitHub data
+                state.message = "GitHub Connected Successfully!";
             })
             .addCase(connectGithub.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+            //github disconnection
+            .addCase(disconnectGithub.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(disconnectGithub.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload; // Updates the global user (isGithubConnected: false)
+                state.message = "GitHub Disconnected.";
+            })
+            .addCase(disconnectGithub.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
+
     },
 });
 
