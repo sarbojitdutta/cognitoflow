@@ -19,9 +19,9 @@ const userSChema = new mongoose.Schema({
         default: '',
         maxlength: 200,
     },
-    githubUsername: { 
-        type: String, 
-        default: null 
+    githubUsername: {
+        type: String,
+        default: null
     },
     isGithubconnected: {
         type: Boolean,
@@ -39,7 +39,9 @@ const userSChema = new mongoose.Schema({
         isPrivate: Boolean,
         url: String
     }],
-
+    xp: { type: Number, default: 0 },
+    level: { type: Number, default: 1 },
+    flawlessReviews: { type: Number, default: 0 },
 
 }, {
     timestamps: true
