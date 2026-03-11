@@ -19,6 +19,7 @@ const dashboardSlice = createSlice({
     name: "dashboard",
     initialState: {
         metrics: null,
+        gamification: null,
         loading: false,
         error: null
     },
@@ -32,6 +33,7 @@ const dashboardSlice = createSlice({
             .addCase(fetchDashboardmetrics.fulfilled, (state, action) => {
                 state.loading = false;
                 state.metrics = action.payload;
+                state.gamification = action.payload.gamification || null;
             })
             .addCase(fetchDashboardmetrics.rejected, (state, action) => {
                 state.loading = false;

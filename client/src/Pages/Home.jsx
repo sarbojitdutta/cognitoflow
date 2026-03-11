@@ -1,13 +1,29 @@
 import React from "react";
 import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { Code, Users, Zap, Bot, Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openAuth } from "../Redux/Slices/uiSlice";
+import { toast } from "react-toastify"; // used for notifications
 
 const Home = () => {
   const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.user);
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 400], [0, -80]);
+
+  // click handler for launch button
+  const handleLaunch = () => {
+    if (!token) {
+      // user not authenticated – open modal
+      dispatch(openAuth());
+    } else {
+      // already logged in
+      toast.info("You are already logged in!", {
+        position: "top-center",
+        toastId: "already-logged-in"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen h-screen bg-[#0a0a0a] text-gray-100 flex flex-col items-center overflow-x-clip overflow-y-auto relative">
@@ -91,7 +107,7 @@ const Home = () => {
             className="mt-10 md:mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <button
-              onClick={() => dispatch(openAuth())}
+              onClick={handleLaunch}
               className="group relative px-8 py-4 rounded-xl text-base font-semibold bg-[#00ffa3] text-black hover:bg-[#00e69a] transition-all duration-200 overflow-hidden flex items-center gap-2 shadow-lg shadow-[#00ffa3]/20 hover:shadow-[#00ffa3]/40"
             >
               Launch CognitoFlow
