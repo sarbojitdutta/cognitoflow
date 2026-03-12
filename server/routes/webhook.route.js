@@ -2,7 +2,6 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { Octokit } from '@octokit/rest'
 import { createAppAuth } from '@octokit/auth-app'
-import fs from 'fs';
 import Review from '../models/review.js'
 import generateReview from '../services/ai.service.js'
 import User from '../models/userModel.js'
@@ -10,7 +9,7 @@ import User from '../models/userModel.js'
 const router = express.Router()
 dotenv.config()
 
-const privateKey = fs.readFileSync(process.env.GITHUB_PRIVATE_KEY_PATH, 'utf8');
+const privateKey = process.env.GITHUB_PRIVATE_KEY.replace(/\\n/g, '\n');
 
 router.post("/github-webhook", async (req, res) => {
     const event = req.headers['x-github-event']
