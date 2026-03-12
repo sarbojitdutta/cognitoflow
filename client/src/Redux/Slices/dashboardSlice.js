@@ -3,7 +3,7 @@ import axios from "axios"
 
 export const fetchDashboardmetrics = createAsyncThunk("dashboard/fetchMetrics", async (_, thunkAPI) => {
     try {
-        const res = await axios.get("http://localhost:3000/api/dashboard/metrics", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard/metrics`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
