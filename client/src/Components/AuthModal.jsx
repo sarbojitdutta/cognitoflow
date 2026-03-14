@@ -19,7 +19,6 @@ export default function AuthModal() {
   const handleSubmit = async (e) => {
 
     e.preventDefault()
-    console.log("Form Data: ", formData)
 
     try {
       let actionResult;
