@@ -16,7 +16,7 @@ import cookieParser from 'cookie-parser'
 connectDB()
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:["http://localhost:5173", "https://cognitoflow.vercel.app/"],
     credentials:true,
     methods:["GET","POST","PUT","DELETE"],
     allowedHeaders:["Content-Type","Authorization"]
