@@ -9,7 +9,7 @@ import User from '../models/userModel.js'
 const router = express.Router()
 dotenv.config()
 
-const privateKey = process.env.GITHUB_PRIVATE_KEY.replace(/\\n/g, '\n');
+const privateKey = process.env.GITHUB_PRIVATE_KEY_PATH.replace(/\\n/g, '\n');
 
 router.post("/github-webhook", async (req, res) => {
     const event = req.headers['x-github-event']
