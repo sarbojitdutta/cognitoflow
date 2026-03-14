@@ -14,7 +14,7 @@ const ReviewDashboard = () => {
         const currentOwner = owner || "sarbojitdutta";
         const currentRepo = repo || "cognitoflow";
 
-        axios.get(`http://localhost:3000/api/code/review/${currentOwner}/${currentRepo}`)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/code/review/${currentOwner}/${currentRepo}`)
             .then(res => {
                 setReviews(res.data);
                 
