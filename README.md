@@ -18,6 +18,7 @@ CognitoFlow is an AI-powered tool that reviews GitHub Pull Requests automaticall
 **Client:** React(Vite), Redux, TailwindCSS
 
 **Server:** Node.js , Express.js, MongoDB, Redis (Caching), Octokit (Github API Integration), groq AI API (code analysis)
+**Language:** Javascript
 
 
 
