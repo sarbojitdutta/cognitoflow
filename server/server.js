@@ -34,6 +34,9 @@ app.use('/api/code', aiRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api', webhookRoutes)
+app.get('/api/ping', (req, res)=>{
+    res.status(200).json({message: "Server is awake"})
+})
 
 
 
