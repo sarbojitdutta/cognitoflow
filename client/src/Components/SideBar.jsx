@@ -74,9 +74,9 @@ function SideBar() {
                 <Link
                   key={path}
                   to={path}
-                  className={`flex items-center gap-3 rounded-3xl px-3 py-3 text-sm font-medium transition-all duration-200 relative group ${
+                  className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200 relative group ${
                     active
-                      ? "bg-[#00ffa3] text-black shadow-lg shadow-emerald-900/30"
+                      ? "bg-[#00ffa3] text-black shadow-lg shadow-emerald-900/30 items-center"
                       : "text-gray-500 hover:bg-[#0a110a] hover:text-gray-200 hover:border-emerald-900/20"
                   }`}
                 >
