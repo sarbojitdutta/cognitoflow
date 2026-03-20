@@ -40,7 +40,6 @@ function Codereview() {
     return (
         <div className="bg-[#0a0a0a] w-full h-screen p-4 relative">
 
-            
 
             <div className="relative z-10 w-full h-full border border-emerald-900/40 rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
 
