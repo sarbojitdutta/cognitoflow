@@ -28,7 +28,7 @@ function Codereview() {
         setLoading(true);
         try {
             if (!code.trim()) return alert("Please enter some code.");
-            const res = await axios.post("http://localhost:3000/api/code/review", { code });
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/code/review`, { code });
             setReview(res.data.review);
         } catch (error) {
             console.error(error);
