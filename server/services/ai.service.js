@@ -124,7 +124,7 @@ const generateReview = async (code, contextType="manual") => {
         // Make API request to Groq
         const completion = await client.chat.completions.create({
             ...GROQ_CONFIG,
-            response_format: {type: "json_object"},
+            ...(contextType === "pr" ? { response_format: {type: "json_object"} } : {}),
             messages: [
                 {
                     role: "system",
@@ -132,7 +132,7 @@ const generateReview = async (code, contextType="manual") => {
                 },
                 {
                     role: "user",
-                    content: `Review this code:\n\n${code}`
+                    content: userMessage
                 }
             ]
         });
