@@ -38,19 +38,15 @@ function Codereview() {
     }
 
     return (
-        <div className="bg-[#060d06] w-full h-screen p-4 relative">
+        <div className="bg-[#0a0a0a] w-full h-screen p-4 relative">
 
-            {/* Background glow orbs */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute top-[-10%] left-[-5%] w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-green-500/4 rounded-full blur-3xl" />
-            </div>
+            
 
             <div className="relative z-10 w-full h-full border border-emerald-900/40 rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
 
                 <PanelGroup direction="horizontal">
                     <Panel defaultSize={50} minSize={30}>
-                        <div className="h-full w-full bg-[#0a110a]/90 backdrop-blur-sm p-4 flex flex-col">
+                        <div className="h-full w-full bg-[#0a0a0a]/90 backdrop-blur-sm p-4 flex flex-col">
                             <div className="flex items-center justify-between mb-4 px-1">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-5 bg-gradient-to-b from-emerald-400 to-green-600 rounded-full" />
@@ -116,7 +112,7 @@ function Codereview() {
 
                     {/* ── Right Panel: Diff Output ── */}
                     <Panel defaultSize={50} minSize={30}>
-                        <div className="h-full w-full bg-[#0a110a]/90 backdrop-blur-sm p-4 flex flex-col">
+                        <div className="h-full w-full bg-[#0a0a0a]/90 backdrop-blur-sm p-4 flex flex-col">
 
                             {/* Panel Header */}
                             <div className="flex items-center gap-2 mb-4 px-1">
