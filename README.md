@@ -95,5 +95,7 @@ To run this project, you will need to add the following environment variables to
 ## Demo Credentials
 
 **Username:** Demo
+
 **Email:** demo@cognitoflow.com
+
 **Password:** DemoPassword123!
