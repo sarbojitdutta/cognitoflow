@@ -12,6 +12,7 @@ export default function AuthModal() {
   const { isOpen } = useSelector(state => state.auth)
 
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ username: "", email: "", password: "" })
 
   if (!isOpen) return null
@@ -96,13 +97,22 @@ export default function AuthModal() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full p-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none"
                 />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full p-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none"
-                />
+                <div className="relative w-full mb-4">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full p-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute flex items-center right-3 top-2.5 text-gray-400 hover:text-white"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
                 <button
                   type="submit"
                   disabled={loading}
@@ -137,13 +147,22 @@ export default function AuthModal() {
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full p-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none"
                 />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full p-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none"
-                />
+                <div className="relative w-full mb-4">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full p-2 rounded-lg bg-white/10 border border-white/20 focus:outline-none pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute flex items-center right-3 top-2.5 text-gray-400 hover:text-white"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
                 <button
                   type="submit"
                   disabled={loading}
