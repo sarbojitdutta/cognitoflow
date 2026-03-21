@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginUser, registerUser } from "../Redux/Slices/userSlice";
 import { closeAuth } from "../Redux/Slices/uiSlice";
-import {eye, eyeOff} from "lucide-react";
+import {Eye, EyeOff} from "lucide-react";
 
 export default function AuthModal() {
   const dispatch = useDispatch();
@@ -111,7 +111,7 @@ export default function AuthModal() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute flex items-center right-3 top-2.5 text-gray-400 hover:text-white"
                   >
-                    {showPassword ? <eyeOff/> : <eye/>}
+                    {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
                   </button>
                 </div>
                 <button
@@ -161,7 +161,7 @@ export default function AuthModal() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute flex items-center right-3 top-2.5 text-gray-400 hover:text-white"
                   >
-                    {showPassword ? <eyeOff/> : <eye/>}
+                    {showPassword ? <EyeOff className="w-5 h-5"/> : <Eye className="w-5 h-5"/>}
                   </button>
                 </div>
                 <button
