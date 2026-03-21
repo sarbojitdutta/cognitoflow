@@ -91,3 +91,9 @@ To run this project, you will need to add the following environment variables to
 ### .env file for client
 
 `VITE_API_URL=http://localhost:3000`
+
+## Demo Credistionals
+
+**Username:** Demo
+**Email:** demo@cognitoflow.com
+**Password:** DemoPassword123!
