@@ -97,7 +97,7 @@ const Home = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            AI-powered code reviews, instant refactoring, and real-time collaboration for modern development teams.
+            Level up your code. AI-powered PR reviews and automated gamification for modern developers.
           </Motion.p>
 
           <Motion.div
